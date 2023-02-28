@@ -1,10 +1,10 @@
 {
     "schemaVersion": 1,
-    "id": "cccosmetics",
+    "id": "turtlecosmetics",
     "version": "${version}",
     "name": "TurtleCosmeticsFabric",
-    "description": "",
-    "authors": [],
+    "description": "A client side mod permits adding new CC:Tweaked turtle overlays via config and resourcepacks",
+    "authors": ["Hakimen"],
     "contact": {},
     "license": "MIT",
     "environment": "*",
