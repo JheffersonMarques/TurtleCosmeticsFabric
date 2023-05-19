@@ -106,8 +106,8 @@ public abstract class TurtleRendererMixin {
             var matrix = transform.peek().getPositionMatrix();
             var opacity = (int) (mc.options.getTextBackgroundOpacity(0.25f) * 255) << 24;
             var width = -font.getWidth(label) / 2.0f;
-            font.draw(label, width, (float) 0, 0x20ffffff, false, matrix, buffers, true, opacity, lightmapCoord);
-            font.draw(label, width, (float) 0, 0xffffffff, false, matrix, buffers, false, 0, lightmapCoord);
+            font.draw(label, width, (float) 0, 0x20ffffff, false, matrix, buffers, TextRenderer.TextLayerType.SEE_THROUGH, opacity, lightmapCoord);
+            font.draw(label, width, (float) 0, 0xffffffff, false, matrix, buffers, TextRenderer.TextLayerType.NORMAL, 0, lightmapCoord);
 
             transform.pop();
         }
