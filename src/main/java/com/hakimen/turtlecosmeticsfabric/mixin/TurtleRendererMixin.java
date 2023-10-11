@@ -1,14 +1,9 @@
 package com.hakimen.turtlecosmeticsfabric.mixin;
 
-import com.hakimen.turtlecosmeticsfabric.api.Overlay;
 import com.hakimen.turtlecosmeticsfabric.api.Overlays;
 import dan200.computercraft.api.turtle.TurtleSide;
-import dan200.computercraft.client.platform.ClientPlatformHelper;
 import dan200.computercraft.client.render.TurtleBlockEntityRenderer;
-import dan200.computercraft.client.turtle.TurtleUpgradeModellers;
-import dan200.computercraft.shared.computer.core.ComputerFamily;
 import dan200.computercraft.shared.turtle.blocks.TurtleBlockEntity;
-import dan200.computercraft.shared.util.DirectionUtil;
 import dan200.computercraft.shared.util.Holiday;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
@@ -26,9 +21,13 @@ import org.spongepowered.asm.mixin.*;
 
 import java.util.ArrayList;
 
+import static dan200.computercraft.client.render.TurtleBlockEntityRenderer.getTurtleModel;
+
 @Pseudo
 @Mixin(value = TurtleBlockEntityRenderer.class, remap = false)
 public abstract class TurtleRendererMixin {
+
+
 
     @Shadow protected abstract void renderUpgrade(MatrixStack transform, VertexConsumer renderer, int lightmapCoord, int overlayLight, TurtleBlockEntity turtle, TurtleSide side, float f);
 
@@ -41,41 +40,19 @@ public abstract class TurtleRendererMixin {
 
     @Shadow protected abstract void renderModel(MatrixStack transform, VertexConsumer renderer, int lightmapCoord, int overlayLight, Identifier model, int[] tints);
 
-    @Shadow @Final private static Identifier COLOUR_TURTLE_MODEL;
 
-    @Shadow @Final private static ModelIdentifier NORMAL_TURTLE_MODEL;
 
-    @Shadow @Final private static ModelIdentifier ADVANCED_TURTLE_MODEL;
-
-    /**
-     * @author
-     * @reason
-     */
-    @Overwrite
-    public static Identifier getTurtleModel(ComputerFamily family, boolean coloured)
-    {
-        switch( family )
-        {
-            case NORMAL:
-            default:
-                return coloured ? COLOUR_TURTLE_MODEL : NORMAL_TURTLE_MODEL;
-            case ADVANCED:
-                return coloured ? COLOUR_TURTLE_MODEL : ADVANCED_TURTLE_MODEL;
-        }
-    }
     private static Identifier[] getTurtleOverlayModel(String label, Identifier overlay, boolean christmas)
     {
         if( overlay != null ) return new Identifier[]{overlay};
         if( christmas ) return new Identifier[]{ELF_OVERLAY_MODEL};
-        if( label != null){
-            var toReturn = new ArrayList<Identifier>();
-            label = label.toLowerCase();
-            for (Overlay over: Overlays.getOverlays()) {
-                if(label.contains(over.getLabel())){
-                    toReturn.add(over.getOverlay());
-                }
+        if (label != null){
+            String[] labels = label.split(" ");
+            Identifier[] overlays = new Identifier[labels.length];
+            for (int i = 0; i < labels.length; i++) {
+                overlays[i] = Overlays.get(labels[i]);
             }
-            return toReturn.toArray(new Identifier[toReturn.size()]);
+            return overlays;
         }
         return null;
     }
@@ -130,12 +107,13 @@ public abstract class TurtleRendererMixin {
         renderModel(transform, buffer, lightmapCoord, overlayLight, getTurtleModel(family, colour != -1), colour == -1 ? null : new int[]{ colour });
 
         // Render the overlay
-        var overlayModels = getTurtleOverlayModel(label,overlay, Holiday.getCurrent() == Holiday.CHRISTMAS);
+        var overlayModels = getTurtleOverlayModel(label, overlay, Holiday.getCurrent() == Holiday.CHRISTMAS);
         if (overlayModels != null) {
-            for (Identifier id:overlayModels) {
-                renderModel(transform, buffer, lightmapCoord, overlayLight, id, null);
+            for (var overlayModel : overlayModels) {
+                if (overlayModel != null) {
+                    renderModel(transform, buffer, lightmapCoord, overlayLight, overlayModel, null);
+                }
             }
-
         }
 
         // Render the upgrades

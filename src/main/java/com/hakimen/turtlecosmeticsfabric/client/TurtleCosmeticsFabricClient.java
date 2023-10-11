@@ -1,11 +1,9 @@
 package com.hakimen.turtlecosmeticsfabric.client;
 
-import com.hakimen.turtlecosmeticsfabric.api.Overlay;
 import com.hakimen.turtlecosmeticsfabric.api.Overlays;
 import com.hakimen.turtlecosmeticsfabric.utils.Config;
 import com.mojang.logging.LogUtils;
-import dan200.computercraft.api.ComputerCraftAPI;
-import dan200.computercraft.client.ClientRegistry;
+
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -25,10 +23,9 @@ public class TurtleCosmeticsFabricClient implements ClientModInitializer {
 
     public static void registerExtraModels(Consumer<Identifier> register) {
         Config.loadConfig();
-        Overlays.clear();
         Overlays.load();
-        for (Overlay overlay: Overlays.getOverlays()){
-            register.accept(overlay.getOverlay());
-        }
+        Overlays.getOverlays().forEach((k,v)->{
+            register.accept(v);
+        });
     }
 }

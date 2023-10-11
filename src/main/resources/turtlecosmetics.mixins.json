@@ -6,8 +6,6 @@
     "mixins": [
     ],
     "client": [
-        "TurtleModelMixin",
-        "TurtlePartsMixin",
         "TurtleRendererMixin"
     ],
     "injectors": {
