@@ -4,6 +4,7 @@
     "package": "com.hakimen.turtlecosmeticsfabric.mixin",
     "compatibilityLevel": "JAVA_8",
     "mixins": [
+
     ],
     "client": [
         "TurtleRendererMixin"
@@ -11,5 +12,5 @@
     "injectors": {
         "defaultRequire": 1
     },
-    "refmap": ""
+    "refmap": "TurtleCosmeticsFabric-refmap.json"
 }
